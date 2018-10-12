@@ -9,7 +9,7 @@ class QGraphicsScene;
 class QLabel;
 class QResizeEvent;
 class FgoGraphicsView;
-
+class QGraphicsItem;
 namespace Ui {
 class MainWindow;
 }
@@ -37,6 +37,7 @@ private:
     QLabel *m_pStatusLabel;
     FgoGraphicsView *m_pImgView;
     QGraphicsScene *m_pScene;
+    QGraphicsItem *m_pCheckImg;
 };
 
 #endif // MAINWINDOW_H

@@ -18,7 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_pImgView(nullptr),
     m_pScene(nullptr),
-    m_pStatusLabel(nullptr)
+    m_pStatusLabel(nullptr),
+    m_pCheckImg(nullptr)
 {
     ui->setupUi(this);
     ui->mainToolBar->hide();
@@ -40,7 +41,7 @@ void MainWindow::initUi()
     btTest->setText("Add Pic");
 
     QToolButton *bt1 = new QToolButton(this);
-    bt1->setText("Add Pic moveable");
+    bt1->setText("Add Test Rect");
 
     QToolButton *bt2 = new QToolButton(this);
     bt2->setText("Test func2");
@@ -99,27 +100,31 @@ void MainWindow::Slot_ButtonTest()
     qDebug()<<"Slot_ButtonTest called, fileName = "<<fileName;
 
     QGraphicsItem *pItem = new QGraphicsPixmapItem(QPixmap::fromImage(QImage(fileName)));
-    pItem->setPos(0,0);
+    //pItem->setPos(33,22);
     m_pScene->addItem(pItem);
+    m_pCheckImg = pItem;
     emit Signal_ChangeStatus(QString("ImagePath = " + fileName));
 }
 
 void MainWindow::Slot_ButtonTest2()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Open Image"),".",tr("Image File(*.png *.jpg *.jpeg *.bmp)"));
-    if (fileName.isEmpty())
-    {
-        return;
-    }
+    if(!m_pCheckImg)
+       return;
+/**this result should be gotten by opencv::matchTemplate*************/
+    //Opencv imageMat testCode
+    QSize cvRectSize(110,120);//result rect size;
+    QRect fakeRect(QPoint(0,0),cvRectSize);
 
-    qDebug()<<"Slot_ButtonTest called, fileName = "<<fileName;
+    QPoint cvDetectPoint(12,33);//result rect point in topleft
+/********************************************************************/
 
-    QGraphicsItem *pItem = new QGraphicsPixmapItem(QPixmap::fromImage(QImage(fileName)));
-    pItem->setPos(0,0);
-    pItem->setFlags(QGraphicsItem::ItemIsMovable);
-    pItem->setOpacity(0.5);
-    m_pScene->addItem(pItem);
-    emit Signal_ChangeStatus(QString("ImagePath = " + fileName));
+    //location coord convert,in case fit the check image's location;
+    QPointF pointLoc = m_pCheckImg->mapToScene(cvDetectPoint);
+    qDebug()<<"pointLoc = "<<pointLoc;
+    QGraphicsRectItem *pRect = new QGraphicsRectItem(fakeRect);
+    pRect->setPen(QColor(0,255,0));
+    pRect->setPos(pointLoc);
+    m_pScene->addItem(pRect);
 }
 
 void MainWindow::Slot_UpdateStatusBar(QString strInfo)
