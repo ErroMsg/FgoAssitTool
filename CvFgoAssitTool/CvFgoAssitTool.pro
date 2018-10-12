@@ -21,16 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-#------------------opencv-----------------------
-INCLUDEPATH += /usr/local/include \
-                /usr/local/include/opencv \
-                /usr/local/include/opencv2
 
-LIBS += /usr/local/lib/libopencv_highgui.so \
-        /usr/local/lib/libopencv_core.so    \
-        /usr/local/lib/libopencv_imgproc.so \
-        /usr/local/lib/libopencv_imgcodecs.so
-#---------------------------------------------
 
 SOURCES += \
         main.cpp \
@@ -44,3 +35,21 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+
+linux
+{
+INCLUDEPATH += /usr/local/include \
+                /usr/local/include/opencv \
+                /usr/local/include/opencv2
+
+LIBS += /usr/local/lib/libopencv_highgui.so \
+        /usr/local/lib/libopencv_core.so    \
+        /usr/local/lib/libopencv_imgproc.so \
+        /usr/local/lib/libopencv_imgcodecs.so
+}
+
+macx
+{
+INCLUDEPATH +=/usr/local/include
+LIBS +=-L/usr/local/lib -lopencv_imgproc -lopencv_core -lopencv_highgui -lopencv_imgcodecs
+}
