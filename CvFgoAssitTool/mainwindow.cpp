@@ -11,6 +11,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QResizeEvent>
+#include <QMessageBox>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -79,6 +80,7 @@ void MainWindow::initUi()
 
     connect(btTest,SIGNAL(clicked(bool)),this,SLOT(Slot_ButtonTest()));
     connect(bt1,SIGNAL(clicked(bool)),this,SLOT(Slot_ButtonTest2()));
+    connect(bt2,SIGNAL(clicked(bool)),this,SLOT(Slot_ButtonTest3()));
     connect(this,SIGNAL(Signal_ChangeStatus(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
     connect(m_pImgView,SIGNAL(Signal_UpdateCoor(QString)),this,SIGNAL(Signal_ChangeStatus(QString)));
 }
@@ -100,6 +102,7 @@ void MainWindow::Slot_ButtonTest()
     qDebug()<<"Slot_ButtonTest called, fileName = "<<fileName;
 
     QGraphicsItem *pItem = new QGraphicsPixmapItem(QPixmap::fromImage(QImage(fileName)));
+    pItem->setData(Qt::UserRole,fileName);
     //pItem->setPos(33,22);
     m_pScene->addItem(pItem);
     m_pCheckImg = pItem;
@@ -108,21 +111,48 @@ void MainWindow::Slot_ButtonTest()
 
 void MainWindow::Slot_ButtonTest2()
 {
+
+}
+
+void MainWindow::Slot_ButtonTest3()
+{
+    qDebug()<<"begin cv match test";
+    CvMatchHelper helper;
+    QString imgpath = m_pCheckImg->data(Qt::UserRole).toString();
+    QString templateFile = QFileDialog::getOpenFileName(this,tr("Open Image"),".",tr("Image File(*.png *.jpg *.jpeg *.bmp)"));
+    if (templateFile.isEmpty())
+    {
+        return;
+    }
+
+    QImage source(imgpath);
+    QImage temp(templateFile);
+    if(temp.width() >= source.width() || temp.height()>= source.height())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("template image size can not larger than source file");
+        msgBox.exec();
+        return;
+    }
+
+    cvResult result = helper.MatchTemplate(imgpath,templateFile);
+    qDebug()<<"Prob is:"<<result.prob;
     if(!m_pCheckImg)
-       return;
-/**this result should be gotten by opencv::matchTemplate*************/
-    //Opencv imageMat testCode
-    QSize cvRectSize(110,120);//result rect size;
+        return;
+
+    QSize cvRectSize(result.resultRect.width,result.resultRect.height);
     QRect fakeRect(QPoint(0,0),cvRectSize);
+    QPoint cvDetectPoint(result.resultRect.x,result.resultRect.y);
+    qDebug()<<"cvRectSize:"<<cvRectSize<<",fakeRect:"<<fakeRect<<
+              ",cvDetectPoint:"<<cvDetectPoint;
 
-    QPoint cvDetectPoint(12,33);//result rect point in topleft
-/********************************************************************/
-
-    //location coord convert,in case fit the check image's location;
     QPointF pointLoc = m_pCheckImg->mapToScene(cvDetectPoint);
     qDebug()<<"pointLoc = "<<pointLoc;
     QGraphicsRectItem *pRect = new QGraphicsRectItem(fakeRect);
-    pRect->setPen(QColor(0,255,0));
+    QPen pen;
+    pen.setColor(QColor(0,255,0));
+    pen.setWidth(5);
+    pRect->setPen(pen);
     pRect->setPos(pointLoc);
     m_pScene->addItem(pRect);
 }

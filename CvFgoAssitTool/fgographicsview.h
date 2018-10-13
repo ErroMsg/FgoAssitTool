@@ -1,6 +1,7 @@
 #ifndef FGOGRAPHICSVIEW_H
 #define FGOGRAPHICSVIEW_H
 #include <QGraphicsView>
+#include <cvmatchhelper.h>
 
 class QMouseEvent;
 class QWheelEvent;

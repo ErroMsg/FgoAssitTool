@@ -28,6 +28,7 @@ protected:
 private slots:
     void Slot_ButtonTest();
     void Slot_ButtonTest2();
+    void Slot_ButtonTest3();
     void Slot_UpdateStatusBar(QString strInfo);
 signals:
     void Signal_ChangeStatus(QString);

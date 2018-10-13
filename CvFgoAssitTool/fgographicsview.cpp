@@ -90,7 +90,7 @@ void FgoGraphicsView::upDateCoordInfo(QMouseEvent *event)
     QPoint viewPoint = event->pos();
     QPointF scenePoint = mapToScene(viewPoint);
 
-    QString strCoord = QString("ViewPos:(%1,%2),ScenePos:(%3,%4)")
+    QString strCoord = QString("ViewPos:(%1,%2),ScenePos:(%3,%4),")
             .arg(viewPoint.x()).arg(viewPoint.y())
             .arg(scenePoint.x()).arg(scenePoint.y());
 

@@ -26,12 +26,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    fgographicsview.cpp
+    fgographicsview.cpp \
+    cvmatchhelper.cpp
 
 HEADERS += \
         mainwindow.h \
     cvinclude.h \
-    fgographicsview.h
+    fgographicsview.h \
+    cvmatchhelper.h
 
 FORMS += \
         mainwindow.ui
