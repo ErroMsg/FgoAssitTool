@@ -8,8 +8,8 @@ class QGraphicsView;
 class QGraphicsScene;
 class QLabel;
 class QResizeEvent;
-class FgoGraphicsView;
 class QGraphicsItem;
+class FgoDisplayerWidget;
 namespace Ui {
 class MainWindow;
 }
@@ -23,8 +23,7 @@ public:
     ~MainWindow();
 
     void initUi();
-protected:
-    void resizeEvent(QResizeEvent *event);
+
 private slots:
     void Slot_ButtonTest();
     void Slot_ButtonTest2();
@@ -36,9 +35,10 @@ private:
     Ui::MainWindow *ui;
 
     QLabel *m_pStatusLabel;
-    FgoGraphicsView *m_pImgView;
     QGraphicsScene *m_pScene;
     QGraphicsItem *m_pCheckImg;
+
+    FgoDisplayerWidget *m_pMainDisplayer;
 };
 
 #endif // MAINWINDOW_H

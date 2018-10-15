@@ -7,13 +7,11 @@
 SOURCES += \
         $$PWD/main.cpp \
         $$PWD/mainwindow.cpp \
-        $$PWD/fgographicsview.cpp \
         $$PWD/cvmatchhelper.cpp
 
 HEADERS += \
         $$PWD/mainwindow.h \
         $$PWD/cvinclude.h \
-        $$PWD/fgographicsview.h \
         $$PWD/cvmatchhelper.h
 
 FORMS += \

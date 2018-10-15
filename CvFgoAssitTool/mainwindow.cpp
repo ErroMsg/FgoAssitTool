@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "fgographicsview.h"
+#include "../CvFgoUiSys/fgographicsview.h"
+#include "cvmatchhelper.h"
 #include <QLayout>
 #include <QSpacerItem>
 #include <QToolButton>
@@ -14,13 +15,15 @@
 #include <QMessageBox>
 #include <QDebug>
 
+#include "../CvFgoUiSys/fgodisplayerwidget.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_pImgView(nullptr),
     m_pScene(nullptr),
     m_pStatusLabel(nullptr),
-    m_pCheckImg(nullptr)
+    m_pCheckImg(nullptr),
+    m_pMainDisplayer(nullptr)
 {
     ui->setupUi(this);
     ui->mainToolBar->hide();
@@ -63,10 +66,14 @@ void MainWindow::initUi()
     //ImageViewLayout
     QGridLayout *pImageLayout = new QGridLayout;
     m_pScene = new QGraphicsScene(this);
-    m_pImgView = new FgoGraphicsView(this);
-    m_pImgView->setScene(m_pScene);
+    FgoGraphicsView *pMainGraphicView = new FgoGraphicsView(this);
+    pMainGraphicView->setScene(m_pScene);
 
-    pImageLayout->addWidget(m_pImgView);
+    m_pMainDisplayer = new FgoDisplayerWidget("Main");
+    m_pMainDisplayer->setGraphicsView(pMainGraphicView);
+
+    //pImageLayout->addWidget(m_pImgView);
+    pImageLayout->addWidget(m_pMainDisplayer);
 
     QHBoxLayout *pMainLayout = new QHBoxLayout;
     pMainLayout->addLayout(pImageLayout);
@@ -82,14 +89,9 @@ void MainWindow::initUi()
     connect(bt1,SIGNAL(clicked(bool)),this,SLOT(Slot_ButtonTest2()));
     connect(bt2,SIGNAL(clicked(bool)),this,SLOT(Slot_ButtonTest3()));
     connect(this,SIGNAL(Signal_ChangeStatus(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
-    connect(m_pImgView,SIGNAL(Signal_UpdateCoor(QString)),this,SIGNAL(Signal_ChangeStatus(QString)));
+    connect(pMainGraphicView,SIGNAL(Signal_UpdateCoor(QString)),this,SIGNAL(Signal_ChangeStatus(QString)));
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    qDebug()<<"GraphicView:"<<m_pImgView->size();
-    //m_pImgView->setSceneRect(-m_pImgView->width(),-m_pImgView->height(),m_pImgView->width(),m_pImgView->height());
-}
 
 void MainWindow::Slot_ButtonTest()
 {
