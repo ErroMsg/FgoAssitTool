@@ -6,11 +6,13 @@
 
 HEADERS += \
     $$PWD/fgodisplayerwidget.h \
-    $$PWD/fgographicsview.h
+    $$PWD/fgographicsview.h \
+    $$PWD/fgoresultdisplayer.h
 
 SOURCES += \
     $$PWD/fgodisplayerwidget.cpp \
-    $$PWD/fgographicsview.cpp
+    $$PWD/fgographicsview.cpp \
+    $$PWD/fgoresultdisplayer.cpp
 
 
 

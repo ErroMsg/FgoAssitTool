@@ -3,23 +3,31 @@
 
 #include <QWidget>
 
-class QGraphicsView;
+
 class QLabel;
 class QToolButton;
-
+class QGraphicsScene;
+class QGraphicsItem;
+class FgoGraphicsView;
 class FgoDisplayerWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FgoDisplayerWidget(QString strTiltle,QWidget *parent = nullptr);
+    FgoDisplayerWidget(QString strTiltle,QWidget *parent = nullptr);
 
     void initLayout();
-    void setGraphicsView(QGraphicsView *pView);
+    FgoGraphicsView *getGraphicsView();
+    QGraphicsScene *getGraphicsScene();
+public slots:
+    void postImage(QString strfilepath);
 
 protected:
-    QGraphicsView *m_pGraphicsView;
+    FgoGraphicsView *m_pGraphicsView;
+    QGraphicsScene *m_pScene;
     QWidget *m_pTitleBar;
     QString m_strTitle;
+
+    QGraphicsItem *m_pPostedImage;
 };
 
 #endif // FGODISPLAYERWIDGET_H

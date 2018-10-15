@@ -5,28 +5,28 @@
 #include <QSpacerItem>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
+#include <QGraphicsPixmapItem>
+#include "fgographicsview.h"
 
-//TitleWidet::TitleWidet(QString strtitle, QWidget *parent)
-//{
-
-//}
 class TitleWidget : public QWidget
 {
 public:
     TitleWidget(QString strtitle,QWidget *parent)
         : QWidget(parent),
-        _pTitleLabel(nullptr),
-        _pToolButton(nullptr)
+          _pTitleLabel(nullptr),
+          _pToolButton(nullptr)
     {
         setObjectName("TitleWidget");
-        setMaximumHeight(45);
+        setMaximumHeight(40);
         _pTitleLabel = new QLabel(strtitle,this);
         _pTitleLabel->setObjectName("TitleLabel");
         _pToolButton = new QToolButton(this);
 
         QSpacerItem *pSpacer = new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Fixed);
         QHBoxLayout *playout = new QHBoxLayout;
-        playout->setMargin(0);
+        playout->setContentsMargins(0,0,0,5);
         playout->setSpacing(0);
         playout->addWidget(_pTitleLabel);
         playout->addSpacerItem(pSpacer);
@@ -35,37 +35,59 @@ public:
         this->setLayout(playout);
     }
 private:
-  QLabel *_pTitleLabel;
-  QToolButton *_pToolButton;
+    QLabel *_pTitleLabel;
+    QToolButton *_pToolButton;
 };
 
 FgoDisplayerWidget::FgoDisplayerWidget(QString strTiltle,QWidget *parent)
     : QWidget(parent),
       m_strTitle(strTiltle),
       m_pGraphicsView(nullptr),
-      m_pTitleBar(nullptr)
+      m_pScene(nullptr),
+      m_pTitleBar(nullptr),
+      m_pPostedImage(nullptr)
 {
     setObjectName("FgoDisplayerWidget");
+    m_pGraphicsView = new FgoGraphicsView(this);
+    m_pScene = new QGraphicsScene(this);
+    m_pGraphicsView->setScene(m_pScene);
+    initLayout();
 }
 
 
 void FgoDisplayerWidget::initLayout()
 {
     m_pTitleBar = new TitleWidget(m_strTitle,this);
-    if(m_pGraphicsView)
-    {
-       QVBoxLayout *playout = new QVBoxLayout;
-       playout->setMargin(0);
-       playout->setSpacing(0);
-       playout->addWidget(m_pTitleBar);
-       playout->addWidget(m_pGraphicsView);
-       this->setLayout(playout);
-    }
+
+    QVBoxLayout *playout = new QVBoxLayout;
+    playout->setMargin(0);
+    playout->setSpacing(0);
+    playout->addWidget(m_pTitleBar);
+    playout->addWidget(m_pGraphicsView);
+    this->setLayout(playout);
 }
 
-void FgoDisplayerWidget::setGraphicsView(QGraphicsView *pView)
+FgoGraphicsView *FgoDisplayerWidget::getGraphicsView()
 {
-    m_pGraphicsView = pView;
-    initLayout();
+    return m_pGraphicsView;
 }
+
+QGraphicsScene *FgoDisplayerWidget::getGraphicsScene()
+{
+    return m_pScene;
+}
+
+void FgoDisplayerWidget::postImage(QString strfilepath)
+{
+    if(m_pPostedImage)
+    {
+        delete m_pPostedImage;
+        m_pPostedImage = nullptr;
+    }
+
+    m_pPostedImage = new QGraphicsPixmapItem(QPixmap(strfilepath));
+    m_pPostedImage->setData(Qt::UserRole,strfilepath);
+    m_pScene->addItem(m_pPostedImage);
+}
+
 
