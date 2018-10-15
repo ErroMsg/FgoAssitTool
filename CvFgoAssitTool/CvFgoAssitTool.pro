@@ -22,7 +22,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
@@ -37,9 +36,18 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+win32:{
+INCLUDEPATH += D:/opencv/build/include \
+                D:/opencv/build/include/opencv \
+                D:/opencv/build/include/opencv2
 
-linux
-{
+DEPENDPATH += D:/opencv/build/x64/vc14
+
+CONFIG(debug, debug|release): LIBS += -LD:/opencv/build/x64/vc14/lib/ -lopencv_world343d
+CONFIG(release, debug|release): LIBS += -LD:/opencv/build/x64/vc14/lib/ -lopencv_world343
+}
+
+linux:{
 INCLUDEPATH += /usr/local/include \
                 /usr/local/include/opencv \
                 /usr/local/include/opencv2
@@ -50,8 +58,9 @@ LIBS += /usr/local/lib/libopencv_highgui.so \
         /usr/local/lib/libopencv_imgcodecs.so
 }
 
-macx
-{
+macx:{
 INCLUDEPATH +=/usr/local/include
 LIBS +=-L/usr/local/lib -lopencv_imgproc -lopencv_core -lopencv_highgui -lopencv_imgcodecs
 }
+
+
