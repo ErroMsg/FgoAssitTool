@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <REPOSITORY_ROOT_PATH>$(SolutionDir)..\</REPOSITORY_ROOT_PATH>
+    <SLOUTION_ROOT_PATH>$(SolutionDir)</SLOUTION_ROOT_PATH>
+    <OUTPUT_ROOT_PATH>$(SolutionDir)..\_Rubbish\OutDir\$(Platform)\$(Configuration)</OUTPUT_ROOT_PATH>
+    <INT_ROOT_PATH>$(SolutionDir)..\_Rubbish\IntDir\$(Platform)\$(Configuration)</INT_ROOT_PATH>
+    <PLATFORM_NAME>$(PlatformTarget)</PLATFORM_NAME>
+    <CONFIG_NAME>$(Configuration)</CONFIG_NAME>
+    <TARGET_NAME>$(TargetName)</TARGET_NAME>
+    <SDK_ROOT_PATH>$(SolutionDir)..\SDK</SDK_ROOT_PATH>
+    <INSTALL_ROOT_PATH>$(SolutionDir)..\Bin\$(Platform)\$(Configuration)</INSTALL_ROOT_PATH>
+    <CV_INCLUDE>D:\opencv\build\include</CV_INCLUDE>
+    <OPENCV_INCLUDE>D:\opencv\build\include\opencv</OPENCV_INCLUDE>
+    <OPENCVII_INCLUDE>D:\opencv\build\include\opencv2</OPENCVII_INCLUDE>
+    <CV_LIB>D:\opencv\build\x64\vc14\lib</CV_LIB>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(OUTPUT_ROOT_PATH)\$(ProjectGuid)\</OutDir>
+    <IntDir>$(INT_ROOT_PATH)\$(ProjectGuid)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(CV_INCLUDE);$(OPENCV_INCLUDE);$(OPENCVII_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(CV_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>echo f | xcopy $(OutDir)$(TargetName)$(TargetExt) $(INSTALL_ROOT_PATH)\$(TargetName)$(TargetExt) /i /e /y
+echo f | xcopy $(OutDir)$(TargetName).pdb $(INSTALL_ROOT_PATH)\$(TargetName).pdb /i /e /y
+</Command>
+    </PostBuildEvent>
+    <QtMoc>
+      <OutputFile>.\..\build\moc\$(Configuration)\moc_%(Filename).cpp</OutputFile>
+    </QtMoc>
+    <QtRcc>
+      <OutputFile>.\..\build\moc\qrc_%(Filename).cpp</OutputFile>
+    </QtRcc>
+    <QtUic>
+      <OutputFile>.\..\build\moc\ui_%(Filename).h</OutputFile>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="REPOSITORY_ROOT_PATH">
+      <Value>$(REPOSITORY_ROOT_PATH)</Value>
+    </BuildMacro>
+    <BuildMacro Include="SLOUTION_ROOT_PATH">
+      <Value>$(SLOUTION_ROOT_PATH)</Value>
+    </BuildMacro>
+    <BuildMacro Include="OUTPUT_ROOT_PATH">
+      <Value>$(OUTPUT_ROOT_PATH)</Value>
+    </BuildMacro>
+    <BuildMacro Include="INT_ROOT_PATH">
+      <Value>$(INT_ROOT_PATH)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PLATFORM_NAME">
+      <Value>$(PLATFORM_NAME)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CONFIG_NAME">
+      <Value>$(CONFIG_NAME)</Value>
+    </BuildMacro>
+    <BuildMacro Include="TARGET_NAME">
+      <Value>$(TARGET_NAME)</Value>
+    </BuildMacro>
+    <BuildMacro Include="SDK_ROOT_PATH">
+      <Value>$(SDK_ROOT_PATH)</Value>
+    </BuildMacro>
+    <BuildMacro Include="INSTALL_ROOT_PATH">
+      <Value>$(INSTALL_ROOT_PATH)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CV_INCLUDE">
+      <Value>$(CV_INCLUDE)</Value>
+    </BuildMacro>
+    <BuildMacro Include="OPENCV_INCLUDE">
+      <Value>$(OPENCV_INCLUDE)</Value>
+    </BuildMacro>
+    <BuildMacro Include="OPENCVII_INCLUDE">
+      <Value>$(OPENCVII_INCLUDE)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CV_LIB">
+      <Value>$(CV_LIB)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
