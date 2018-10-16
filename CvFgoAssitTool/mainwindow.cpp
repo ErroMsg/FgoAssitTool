@@ -145,26 +145,6 @@ void MainWindow::slot_TemplateMat()
     //Post result:
     m_pResultDisplayer->postMatResult(QPoint(result.resultRect.x,result.resultRect.y),
                                       result.resultRect.width,result.resultRect.height);
-
-
-    /*if(!m_pCheckImg)
-        return;
-
-    QSize cvRectSize(result.resultRect.width,result.resultRect.height);
-    QRect fakeRect(QPoint(0,0),cvRectSize);
-    QPoint cvDetectPoint(result.resultRect.x,result.resultRect.y);
-    qDebug()<<"cvRectSize:"<<cvRectSize<<",fakeRect:"<<fakeRect<<
-              ",cvDetectPoint:"<<cvDetectPoint;
-
-    QPointF pointLoc = m_pCheckImg->mapToScene(cvDetectPoint);
-    qDebug()<<"pointLoc = "<<pointLoc;
-    QGraphicsRectItem *pRect = new QGraphicsRectItem(fakeRect);
-    QPen pen;
-    pen.setColor(QColor(0,255,0));
-    pen.setWidth(5);
-    pRect->setPen(pen);
-    pRect->setPos(pointLoc);
-    m_pScene->addItem(pRect);*/
 }
 
 

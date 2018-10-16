@@ -9,9 +9,22 @@ class QToolButton;
 class QGraphicsScene;
 class QGraphicsItem;
 class FgoGraphicsView;
+
+class TitleWidget : public QWidget
+{
+
+
+public:
+    TitleWidget(QString strtitle,QWidget *parent=0);
+private:
+    QLabel *_pTitleLabel;
+    QToolButton *_pToolButton;
+};
+
 class FgoDisplayerWidget : public QWidget
 {
     Q_OBJECT
+
 public:
     FgoDisplayerWidget(QString strTiltle,QWidget *parent = nullptr);
 
@@ -19,16 +32,13 @@ public:
     FgoGraphicsView *getGraphicsView();
     QGraphicsScene *getGraphicsScene();
     QString getPostImagePath();
-
-public slots:
     void postImage(QString strfilepath);
 
 protected:
     FgoGraphicsView *m_pGraphicsView;
     QGraphicsScene *m_pScene;
-    QWidget *m_pTitleBar;
+    TitleWidget *m_pTitleBar;
     QString m_strTitle;
-
     QGraphicsItem *m_pPostedImage;
 };
 

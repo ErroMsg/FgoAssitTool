@@ -10,34 +10,28 @@
 #include <QGraphicsPixmapItem>
 #include "fgographicsview.h"
 
-class TitleWidget : public QWidget
+
+TitleWidget::TitleWidget(QString strtitle, QWidget *parent)
+    : QWidget(parent),
+      _pTitleLabel(nullptr),
+      _pToolButton(nullptr)
 {
-public:
-    TitleWidget(QString strtitle,QWidget *parent)
-        : QWidget(parent),
-          _pTitleLabel(nullptr),
-          _pToolButton(nullptr)
-    {
-        setObjectName("TitleWidget");
-        setMaximumHeight(40);
-        _pTitleLabel = new QLabel(strtitle,this);
-        _pTitleLabel->setObjectName("TitleLabel");
-        _pToolButton = new QToolButton(this);
+    setObjectName("TitleWidget");
+    setMaximumHeight(40);
+    _pTitleLabel = new QLabel(strtitle,this);
+    _pTitleLabel->setObjectName("TitleLabel");
+    _pToolButton = new QToolButton(this);
 
-        QSpacerItem *pSpacer = new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Fixed);
-        QHBoxLayout *playout = new QHBoxLayout;
-        playout->setContentsMargins(0,0,0,5);
-        playout->setSpacing(0);
-        playout->addWidget(_pTitleLabel);
-        playout->addSpacerItem(pSpacer);
-        playout->addWidget(_pToolButton);
+    QSpacerItem *pSpacer = new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Fixed);
+    QHBoxLayout *playout = new QHBoxLayout;
+    playout->setContentsMargins(0,0,0,5);
+    playout->setSpacing(0);
+    playout->addWidget(_pTitleLabel);
+    playout->addSpacerItem(pSpacer);
+    playout->addWidget(_pToolButton);
 
-        this->setLayout(playout);
-    }
-private:
-    QLabel *_pTitleLabel;
-    QToolButton *_pToolButton;
-};
+    this->setLayout(playout);
+}
 
 FgoDisplayerWidget::FgoDisplayerWidget(QString strTiltle,QWidget *parent)
     : QWidget(parent),
@@ -47,7 +41,7 @@ FgoDisplayerWidget::FgoDisplayerWidget(QString strTiltle,QWidget *parent)
       m_pTitleBar(nullptr),
       m_pPostedImage(nullptr)
 {
-    setObjectName("DisplayerWidget");
+    this->setObjectName("FgoDisplayerWidget");
     m_pGraphicsView = new FgoGraphicsView(this);
     m_pScene = new QGraphicsScene(this);
     m_pGraphicsView->setScene(m_pScene);
