@@ -18,6 +18,8 @@ public:
     void initLayout();
     FgoGraphicsView *getGraphicsView();
     QGraphicsScene *getGraphicsScene();
+    QString getPostImagePath();
+
 public slots:
     void postImage(QString strfilepath);
 

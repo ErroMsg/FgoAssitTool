@@ -47,7 +47,7 @@ FgoDisplayerWidget::FgoDisplayerWidget(QString strTiltle,QWidget *parent)
       m_pTitleBar(nullptr),
       m_pPostedImage(nullptr)
 {
-    setObjectName("FgoDisplayerWidget");
+    setObjectName("DisplayerWidget");
     m_pGraphicsView = new FgoGraphicsView(this);
     m_pScene = new QGraphicsScene(this);
     m_pGraphicsView->setScene(m_pScene);
@@ -75,6 +75,16 @@ FgoGraphicsView *FgoDisplayerWidget::getGraphicsView()
 QGraphicsScene *FgoDisplayerWidget::getGraphicsScene()
 {
     return m_pScene;
+}
+
+QString FgoDisplayerWidget::getPostImagePath()
+{
+    QString strPath;
+    if(m_pPostedImage)
+    {
+        strPath = m_pPostedImage->data(Qt::UserRole).toString();
+    }
+    return strPath;
 }
 
 void FgoDisplayerWidget::postImage(QString strfilepath)

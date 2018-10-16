@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "../CvFgoUiSys/fgographicsview.h"
+#include "../CvFgoUiSys/fgoresultdisplayer.h"
 #include "cvmatchhelper.h"
 #include <QLayout>
 #include <QSpacerItem>
@@ -13,6 +14,10 @@
 #include <QGraphicsItem>
 #include <QResizeEvent>
 #include <QMessageBox>
+#include <QSplitter>
+#include <QAction>
+#include <QList>
+#include <QFileInfo>
 #include <QDebug>
 
 #include "../CvFgoUiSys/fgodisplayerwidget.h"
@@ -20,16 +25,19 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_pScene(nullptr),
     m_pStatusLabel(nullptr),
-    m_pCheckImg(nullptr),
-    m_pMainDisplayer(nullptr)
+    m_pMainDisplayer(nullptr),
+    m_pTemplateDisplayer(nullptr),
+    m_pResultDisplayer(nullptr)
 {
     ui->setupUi(this);
-    ui->mainToolBar->hide();
     setWindowTitle("Fgo Assist");
-    initUi();
 
+    initUi();
+    initToolBar();
+    initStatusBar();
+
+    setWindowState(Qt::WindowMaximized);
 }
 
 MainWindow::~MainWindow()
@@ -39,61 +47,54 @@ MainWindow::~MainWindow()
 
 void MainWindow::initUi()
 {
-    //ButtonLayout
-    QGridLayout *pButtonLayout = new QGridLayout;
-    QToolButton *btTest = new QToolButton(this);
-    btTest->setText("Add Pic");
-
-    QToolButton *bt1 = new QToolButton(this);
-    bt1->setText("Add Test Rect");
-
-    QToolButton *bt2 = new QToolButton(this);
-    bt2->setText("Test func2");
-
-    QToolButton *bt3 = new QToolButton(this);
-    bt3->setText("Test func3");
-
-    QSpacerItem *pSpacerTop = new QSpacerItem(0,5,QSizePolicy::Fixed,QSizePolicy::Fixed);
-    QSpacerItem *pSpacerBottom = new QSpacerItem(0,0,QSizePolicy::Minimum,QSizePolicy::Expanding);
-
-    pButtonLayout->addItem(pSpacerTop,0,0);
-    pButtonLayout->addWidget(btTest,1,0);
-    pButtonLayout->addWidget(bt1,2,0);
-    pButtonLayout->addWidget(bt2,3,0);
-    pButtonLayout->addWidget(bt3,4,0);
-    pButtonLayout->addItem(pSpacerBottom,5,0);
-
     //ImageViewLayout
-    QGridLayout *pImageLayout = new QGridLayout;
-    m_pScene = new QGraphicsScene(this);
-    FgoGraphicsView *pMainGraphicView = new FgoGraphicsView(this);
-    pMainGraphicView->setScene(m_pScene);
-
     m_pMainDisplayer = new FgoDisplayerWidget("Main");
-    m_pMainDisplayer->setGraphicsView(pMainGraphicView);
+    m_pTemplateDisplayer = new FgoDisplayerWidget("Template");
+    m_pResultDisplayer = new FgoResultDisplayer("Result");
 
-    //pImageLayout->addWidget(m_pImgView);
-    pImageLayout->addWidget(m_pMainDisplayer);
+    QSplitter *vsplitter = new QSplitter(Qt::Orientation::Vertical);
+    vsplitter->addWidget(m_pMainDisplayer);
+    vsplitter->addWidget(m_pTemplateDisplayer);
+
+    QSplitter *mainsplitter = new QSplitter(Qt::Orientation::Horizontal);
+    mainsplitter->addWidget(vsplitter);
+    mainsplitter->addWidget(m_pResultDisplayer);
+    mainsplitter->setStretchFactor(0,1);
+    mainsplitter->setStretchFactor(1,2);
 
     QHBoxLayout *pMainLayout = new QHBoxLayout;
-    pMainLayout->addLayout(pImageLayout);
-    pMainLayout->addLayout(pButtonLayout);
+    pMainLayout->setMargin(5);
+    pMainLayout->setSpacing(0);
+    pMainLayout->addWidget(mainsplitter);
     centralWidget()->setLayout(pMainLayout);
 
+    connect(m_pMainDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),
+            this,SIGNAL(Signal_ChangeStatus(QString)));
+}
+
+void MainWindow::initToolBar()
+{
+    QAction *pActAddSource = new QAction("Add Source");
+    QAction *pActAddTemplate = new QAction("Add Template");
+    QAction *pActMat = new QAction("Mat");
+    ui->mainToolBar->addAction(pActAddSource);
+    ui->mainToolBar->addAction(pActAddTemplate);
+    ui->mainToolBar->addAction(pActMat);
+    connect(pActAddSource,SIGNAL(triggered(bool)),this,SLOT(slot_AddSource()));
+    connect(pActAddTemplate,SIGNAL(triggered(bool)),this,SLOT(slot_AddTemplate()));
+    connect(pActMat,SIGNAL(triggered(bool)),this,SLOT(slot_TemplateMat()));
+}
+
+void MainWindow::initStatusBar()
+{
     //Status Bar
     m_pStatusLabel = new QLabel(this);
     m_pStatusLabel->setText("ImagePath is Empty");
     this->statusBar()->addPermanentWidget(m_pStatusLabel);
-
-    connect(btTest,SIGNAL(clicked(bool)),this,SLOT(Slot_ButtonTest()));
-    connect(bt1,SIGNAL(clicked(bool)),this,SLOT(Slot_ButtonTest2()));
-    connect(bt2,SIGNAL(clicked(bool)),this,SLOT(Slot_ButtonTest3()));
-    connect(this,SIGNAL(Signal_ChangeStatus(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
-    connect(pMainGraphicView,SIGNAL(Signal_UpdateCoor(QString)),this,SIGNAL(Signal_ChangeStatus(QString)));
+    connect(m_pMainDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
 }
 
-
-void MainWindow::Slot_ButtonTest()
+void MainWindow::slot_AddSource()
 {
     QString fileName = QFileDialog::getOpenFileName(this,tr("Open Image"),".",tr("Image File(*.png *.jpg *.jpeg *.bmp)"));
     if (fileName.isEmpty())
@@ -101,45 +102,52 @@ void MainWindow::Slot_ButtonTest()
         return;
     }
 
-    qDebug()<<"Slot_ButtonTest called, fileName = "<<fileName;
-
-    QGraphicsItem *pItem = new QGraphicsPixmapItem(QPixmap::fromImage(QImage(fileName)));
-    pItem->setData(Qt::UserRole,fileName);
-    //pItem->setPos(33,22);
-    m_pScene->addItem(pItem);
-    m_pCheckImg = pItem;
-    emit Signal_ChangeStatus(QString("ImagePath = " + fileName));
+    m_pMainDisplayer->postImage(fileName);
+    m_pResultDisplayer->postImage(fileName);
+    emit Signal_ChangeStatus(QString("Source ImagePath = " + fileName));
 }
 
-void MainWindow::Slot_ButtonTest2()
+void MainWindow::slot_AddTemplate()
 {
-
-}
-
-void MainWindow::Slot_ButtonTest3()
-{
-    qDebug()<<"begin cv match test";
-    CvMatchHelper helper;
-    QString imgpath = m_pCheckImg->data(Qt::UserRole).toString();
-    QString templateFile = QFileDialog::getOpenFileName(this,tr("Open Image"),".",tr("Image File(*.png *.jpg *.jpeg *.bmp)"));
-    if (templateFile.isEmpty())
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Open Image"),".",tr("Image File(*.png *.jpg *.jpeg *.bmp)"));
+    if (fileName.isEmpty())
     {
         return;
     }
 
-    QImage source(imgpath);
+    m_pTemplateDisplayer->postImage(fileName);
+    emit Signal_ChangeStatus(QString("Template ImagePath = " + fileName));
+}
+
+void MainWindow::slot_TemplateMat()
+{
+    QString imagepath = m_pMainDisplayer->getPostImagePath();
+    QString templateFile = m_pTemplateDisplayer->getPostImagePath();
+
+    QFileInfo fi(imagepath);
+    QFileInfo ft(templateFile);
+    if(!fi.isFile() || !ft.isFile())
+    {
+        slot_MessageBox("Add source image and template image!");
+        return;
+    }
+
+    QImage source(imagepath);
     QImage temp(templateFile);
     if(temp.width() >= source.width() || temp.height()>= source.height())
     {
-        QMessageBox msgBox;
-        msgBox.setText("template image size can not larger than source file");
-        msgBox.exec();
+        slot_MessageBox("template image size can not larger than source file");
         return;
     }
 
-    cvResult result = helper.MatchTemplate(imgpath,templateFile);
-    qDebug()<<"Prob is:"<<result.prob;
-    if(!m_pCheckImg)
+    CvMatchHelper helper;
+    cvResult result = helper.MatchTemplate(imagepath,templateFile);
+    //Post result:
+    m_pResultDisplayer->postMatResult(QPoint(result.resultRect.x,result.resultRect.y),
+                                      result.resultRect.width,result.resultRect.height);
+
+
+    /*if(!m_pCheckImg)
         return;
 
     QSize cvRectSize(result.resultRect.width,result.resultRect.height);
@@ -156,10 +164,25 @@ void MainWindow::Slot_ButtonTest3()
     pen.setWidth(5);
     pRect->setPen(pen);
     pRect->setPos(pointLoc);
-    m_pScene->addItem(pRect);
+    m_pScene->addItem(pRect);*/
 }
+
+
+void MainWindow::Slot_ButtonTest()
+{
+
+}
+
 
 void MainWindow::Slot_UpdateStatusBar(QString strInfo)
 {
     m_pStatusLabel->setText(strInfo);
+}
+
+void MainWindow::slot_MessageBox(QString strinfo)
+{
+    QMessageBox msgBox;
+    msgBox.setText(strinfo);
+    msgBox.exec();
+    return;
 }
