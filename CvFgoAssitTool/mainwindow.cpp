@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_pStatusLabel(nullptr),
-    m_pMainDisplayer(nullptr),
+    m_pSourceDisplayer(nullptr),
     m_pTemplateDisplayer(nullptr),
     m_pResultDisplayer(nullptr)
 {
@@ -48,12 +48,12 @@ MainWindow::~MainWindow()
 void MainWindow::initUi()
 {
     //ImageViewLayout
-    m_pMainDisplayer = new FgoDisplayerWidget("Main");
+    m_pSourceDisplayer = new FgoDisplayerWidget("Source");
     m_pTemplateDisplayer = new FgoDisplayerWidget("Template");
     m_pResultDisplayer = new FgoResultDisplayer("Result");
 
     QSplitter *vsplitter = new QSplitter(Qt::Orientation::Vertical);
-    vsplitter->addWidget(m_pMainDisplayer);
+    vsplitter->addWidget(m_pSourceDisplayer);
     vsplitter->addWidget(m_pTemplateDisplayer);
 
     QSplitter *mainsplitter = new QSplitter(Qt::Orientation::Horizontal);
@@ -68,8 +68,13 @@ void MainWindow::initUi()
     pMainLayout->addWidget(mainsplitter);
     centralWidget()->setLayout(pMainLayout);
 
-    connect(m_pMainDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),
+    connect(m_pResultDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),
             this,SIGNAL(Signal_ChangeStatus(QString)));
+    connect(m_pSourceDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),
+            this,SIGNAL(Signal_ChangeStatus(QString)));
+    connect(m_pTemplateDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),
+            this,SIGNAL(Signal_ChangeStatus(QString)));
+
 }
 
 void MainWindow::initToolBar()
@@ -91,7 +96,9 @@ void MainWindow::initStatusBar()
     m_pStatusLabel = new QLabel(this);
     m_pStatusLabel->setText("ImagePath is Empty");
     this->statusBar()->addPermanentWidget(m_pStatusLabel);
-    connect(m_pMainDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
+    connect(m_pSourceDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
+    connect(m_pTemplateDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
+    connect(m_pResultDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
 }
 
 void MainWindow::slot_AddSource()
@@ -102,7 +109,7 @@ void MainWindow::slot_AddSource()
         return;
     }
 
-    m_pMainDisplayer->postImage(fileName);
+    m_pSourceDisplayer->postImage(fileName);
     m_pResultDisplayer->postImage(fileName);
     emit Signal_ChangeStatus(QString("Source ImagePath = " + fileName));
 }
@@ -121,7 +128,7 @@ void MainWindow::slot_AddTemplate()
 
 void MainWindow::slot_TemplateMat()
 {
-    QString imagepath = m_pMainDisplayer->getPostImagePath();
+    QString imagepath = m_pSourceDisplayer->getPostImagePath();
     QString templateFile = m_pTemplateDisplayer->getPostImagePath();
 
     QFileInfo fi(imagepath);

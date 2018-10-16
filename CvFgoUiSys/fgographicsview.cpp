@@ -14,6 +14,7 @@ FgoGraphicsView::FgoGraphicsView(QWidget *parent)
     , m_bMouseTranslate(false)
     ,m_translateSpeed(1.0)
 {
+    setObjectName("FgoGraphicsView");
     setBackgroundBrush(QColor(80,80,80));
     setMouseTracking(true);
     //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

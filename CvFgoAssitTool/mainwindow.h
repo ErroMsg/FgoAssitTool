@@ -40,7 +40,7 @@ private:
     Ui::MainWindow *ui;
 
     QLabel *m_pStatusLabel;
-    FgoDisplayerWidget *m_pMainDisplayer;
+    FgoDisplayerWidget *m_pSourceDisplayer;
     FgoDisplayerWidget *m_pTemplateDisplayer;
     FgoResultDisplayer *m_pResultDisplayer;
 };

@@ -6,7 +6,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QFile  qssFile("/home/gaopy/GitHubProj/Build/stypesheet.qss");
+    QFile  qssFile("../../Config/stypesheet.qss");
     if(qssFile.open(QFile::ReadOnly))
     {
         QString ba = QLatin1String(qssFile.readAll());

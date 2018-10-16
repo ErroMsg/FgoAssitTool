@@ -2,6 +2,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QPen>
+#include <QBrush>
 
 FgoResultDisplayer::FgoResultDisplayer(QString strTitle, QWidget *parent)
     : FgoDisplayerWidget(strTitle,parent)
@@ -15,10 +16,10 @@ void FgoResultDisplayer::postMatResult(QPoint pt, int width, int height)
     QRect rc(0,0,width,height);
     QPointF pointLoc = m_pPostedImage->mapToScene(pt);
     QGraphicsRectItem *pRectItem = new QGraphicsRectItem(rc);
-    QPen pen;
-    pen.setColor(QColor(255,0,0));
-    pen.setWidth(5);
+    QPen pen(QColor(0,0,255),4);
+    QBrush brush(QColor(0,0,255,100));
     pRectItem->setPen(pen);
+    pRectItem->setBrush(brush);
     pRectItem->setPos(pointLoc);
     m_pScene->addItem(pRectItem);
 }

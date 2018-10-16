@@ -9,10 +9,10 @@
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include "fgographicsview.h"
-
+#include <QDebug>
 
 TitleWidget::TitleWidget(QString strtitle, QWidget *parent)
-    : QWidget(parent),
+    : QFrame(parent),
       _pTitleLabel(nullptr),
       _pToolButton(nullptr)
 {
@@ -24,7 +24,7 @@ TitleWidget::TitleWidget(QString strtitle, QWidget *parent)
 
     QSpacerItem *pSpacer = new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Fixed);
     QHBoxLayout *playout = new QHBoxLayout;
-    playout->setContentsMargins(0,0,0,5);
+    playout->setMargin(4);
     playout->setSpacing(0);
     playout->addWidget(_pTitleLabel);
     playout->addSpacerItem(pSpacer);
@@ -34,7 +34,7 @@ TitleWidget::TitleWidget(QString strtitle, QWidget *parent)
 }
 
 FgoDisplayerWidget::FgoDisplayerWidget(QString strTiltle,QWidget *parent)
-    : QWidget(parent),
+    : QFrame(parent),
       m_strTitle(strTiltle),
       m_pGraphicsView(nullptr),
       m_pScene(nullptr),
@@ -71,6 +71,16 @@ QGraphicsScene *FgoDisplayerWidget::getGraphicsScene()
     return m_pScene;
 }
 
+void FgoDisplayerWidget::clearScene()
+{
+    m_pScene->removeItem(m_pPostedImage);
+    if(m_pPostedImage)
+    {
+        delete m_pPostedImage;
+        m_pPostedImage = nullptr;
+    }
+}
+
 QString FgoDisplayerWidget::getPostImagePath()
 {
     QString strPath;
@@ -85,8 +95,7 @@ void FgoDisplayerWidget::postImage(QString strfilepath)
 {
     if(m_pPostedImage)
     {
-        delete m_pPostedImage;
-        m_pPostedImage = nullptr;
+        clearScene();
     }
 
     m_pPostedImage = new QGraphicsPixmapItem(QPixmap(strfilepath));
