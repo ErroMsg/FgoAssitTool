@@ -2,15 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <REPOSITORY_ROOT_PATH>$(SolutionDir)..\</REPOSITORY_ROOT_PATH>
-    <SLOUTION_ROOT_PATH>$(SolutionDir)</SLOUTION_ROOT_PATH>
-    <OUTPUT_ROOT_PATH>$(SolutionDir)..\_Rubbish\OutDir\$(Platform)\$(Configuration)</OUTPUT_ROOT_PATH>
-    <INT_ROOT_PATH>$(SolutionDir)..\_Rubbish\IntDir\$(Platform)\$(Configuration)</INT_ROOT_PATH>
+    <OUTPUT_ROOT_PATH>$(SolutionDir).\_Rubbish\OutDir\$(Platform)\$(Configuration)</OUTPUT_ROOT_PATH>
+    <INT_ROOT_PATH>$(SolutionDir).\_Rubbish\IntDir\$(Platform)\$(Configuration)</INT_ROOT_PATH>
     <PLATFORM_NAME>$(PlatformTarget)</PLATFORM_NAME>
     <CONFIG_NAME>$(Configuration)</CONFIG_NAME>
     <TARGET_NAME>$(TargetName)</TARGET_NAME>
-    <SDK_ROOT_PATH>$(SolutionDir)..\SDK</SDK_ROOT_PATH>
-    <INSTALL_ROOT_PATH>$(SolutionDir)..\Bin\$(Platform)\$(Configuration)</INSTALL_ROOT_PATH>
+    <INSTALL_ROOT_PATH>$(SolutionDir).\Bin\$(Platform)\$(Configuration)</INSTALL_ROOT_PATH>
     <CV_INCLUDE>D:\opencv\build\include</CV_INCLUDE>
     <OPENCV_INCLUDE>D:\opencv\build\include\opencv</OPENCV_INCLUDE>
     <OPENCVII_INCLUDE>D:\opencv\build\include\opencv2</OPENCVII_INCLUDE>
@@ -47,12 +44,6 @@ echo f | xcopy $(OutDir)$(TargetName).pdb $(INSTALL_ROOT_PATH)\$(TargetName).pdb
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <BuildMacro Include="REPOSITORY_ROOT_PATH">
-      <Value>$(REPOSITORY_ROOT_PATH)</Value>
-    </BuildMacro>
-    <BuildMacro Include="SLOUTION_ROOT_PATH">
-      <Value>$(SLOUTION_ROOT_PATH)</Value>
-    </BuildMacro>
     <BuildMacro Include="OUTPUT_ROOT_PATH">
       <Value>$(OUTPUT_ROOT_PATH)</Value>
     </BuildMacro>
@@ -67,9 +58,6 @@ echo f | xcopy $(OutDir)$(TargetName).pdb $(INSTALL_ROOT_PATH)\$(TargetName).pdb
     </BuildMacro>
     <BuildMacro Include="TARGET_NAME">
       <Value>$(TARGET_NAME)</Value>
-    </BuildMacro>
-    <BuildMacro Include="SDK_ROOT_PATH">
-      <Value>$(SDK_ROOT_PATH)</Value>
     </BuildMacro>
     <BuildMacro Include="INSTALL_ROOT_PATH">
       <Value>$(INSTALL_ROOT_PATH)</Value>

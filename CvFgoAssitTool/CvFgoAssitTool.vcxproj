@@ -22,14 +22,18 @@
     <QtUic Include="mainwindow.ui" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\CvFgoUiSys\fgoresultdisplayer.h" />
+    <QtMoc Include="..\CvFgoUiSys\fgographicsview.h" />
+    <QtMoc Include="..\CvFgoUiSys\fgodisplayerwidget.h" />
     <ClInclude Include="cvinclude.h" />
     <ClInclude Include="cvmatchhelper.h" />
     <QtMoc Include="mainwindow.h" />
-    <QtMoc Include="fgographicsview.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\CvFgoUiSys\fgodisplayerwidget.cpp" />
+    <ClCompile Include="..\CvFgoUiSys\fgographicsview.cpp" />
+    <ClCompile Include="..\CvFgoUiSys\fgoresultdisplayer.cpp" />
     <ClCompile Include="cvmatchhelper.cpp" />
-    <ClCompile Include="fgographicsview.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
   </ItemGroup>
