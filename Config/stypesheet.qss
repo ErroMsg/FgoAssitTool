@@ -1,0 +1,21 @@
+QWidget#TitleWidget
+{
+	background-color:rgb(60,60,60);
+}
+
+QWidget#FgoGraphicsView
+{
+	background-color:rgb(60,60,60);
+}
+
+QLabel#TitleLabel
+{
+	color:rgb(255,255,255);
+	background-color:rgb(60,60,60);
+}
+
+QWidget
+{
+	background-color:rgb(120,120,120);
+}
+

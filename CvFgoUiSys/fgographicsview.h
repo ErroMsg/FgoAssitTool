@@ -1,7 +1,7 @@
 #ifndef FGOGRAPHICSVIEW_H
 #define FGOGRAPHICSVIEW_H
 #include <QGraphicsView>
-#include "cvmatchhelper.h"
+
 class QMouseEvent;
 class QWheelEvent;
 class FgoGraphicsView : public QGraphicsView
@@ -16,12 +16,13 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+
 private:
     void zoomIn();
     void zoomOut();
     void zoom(float scaleFactor);
     void upDateCoordInfo(QMouseEvent *event);
-    void translate(QPointF delta);  // 平移
 
 private:
     qreal m_scale;

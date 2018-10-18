@@ -8,8 +8,9 @@ class QGraphicsView;
 class QGraphicsScene;
 class QLabel;
 class QResizeEvent;
-class FgoGraphicsView;
 class QGraphicsItem;
+class FgoDisplayerWidget;
+class FgoResultDisplayer;
 namespace Ui {
 class MainWindow;
 }
@@ -23,22 +24,25 @@ public:
     ~MainWindow();
 
     void initUi();
-protected:
-    void resizeEvent(QResizeEvent *event);
+    void initToolBar();
+    void initStatusBar();
+
 private slots:
-    void Slot_ButtonTest();
-    void Slot_ButtonTest2();
-    void Slot_ButtonTest3();
+    void slot_AddSource();
+    void slot_AddTemplate();
+    void slot_TemplateMat();
+    void Slot_ButtonTest(); //test use port
     void Slot_UpdateStatusBar(QString strInfo);
+    void slot_MessageBox(QString strinfo);
 signals:
     void Signal_ChangeStatus(QString);
 private:
     Ui::MainWindow *ui;
 
     QLabel *m_pStatusLabel;
-    FgoGraphicsView *m_pImgView;
-    QGraphicsScene *m_pScene;
-    QGraphicsItem *m_pCheckImg;
+    FgoDisplayerWidget *m_pSourceDisplayer;
+    FgoDisplayerWidget *m_pTemplateDisplayer;
+    FgoResultDisplayer *m_pResultDisplayer;
 };
 
 #endif // MAINWINDOW_H

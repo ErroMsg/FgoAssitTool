@@ -1,14 +1,12 @@
 #include "fgographicsview.h"
-#include "mainwindow.h"
+//#include "mainwindow.h"
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include <QWheelEvent>
 #include <QMouseEvent>
+#include <QResizeEvent>
+#include <QScrollBar>
 #include <QDebug>
-
-#define VIEW_CENTER viewport()->rect().center()
-#define VIEW_WIDTH viewport()->rect().width()
-#define VIEW_HEIGHT viewport()->rect().height()
 
 FgoGraphicsView::FgoGraphicsView(QWidget *parent)
     : m_scale(1.0)
@@ -16,22 +14,26 @@ FgoGraphicsView::FgoGraphicsView(QWidget *parent)
     , m_bMouseTranslate(false)
     ,m_translateSpeed(1.0)
 {
+    setObjectName("FgoGraphicsView");
     setBackgroundBrush(QColor(80,80,80));
     setMouseTracking(true);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //setCursor(Qt::PointingHandCursor);
+    //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setRenderHint(QPainter::Antialiasing);
-    setSceneRect(INT_MIN/2, INT_MIN/2, INT_MAX, INT_MAX);
-    centerOn(0, 0);
 }
 
 void FgoGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_bMouseTranslate)
     {
-        QPointF mouseDelta = mapToScene(event->pos()) - mapToScene(m_lastMousePos);
-        translate(mouseDelta);
+        //QPointF mouseDelta = mapToScene(event->pos()) - mapToScene(m_lastMousePos);
+        QPoint deltapt = event->pos() - m_lastMousePos;
+
+        QScrollBar *pvBar = this->verticalScrollBar();
+        pvBar->setValue(pvBar->value() - deltapt.y());
+
+        QScrollBar *phBar = this->horizontalScrollBar();
+        phBar->setValue(phBar->value() - deltapt.x());
     }
     m_lastMousePos = event->pos();
 
@@ -60,6 +62,11 @@ void FgoGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     m_bMouseTranslate = false;
     QGraphicsView::mouseReleaseEvent(event);
+}
+
+void FgoGraphicsView::resizeEvent(QResizeEvent *event)
+{
+    QGraphicsView::resizeEvent(event);
 }
 
 void FgoGraphicsView::zoomIn()
@@ -104,15 +111,4 @@ void FgoGraphicsView::upDateCoordInfo(QMouseEvent *event)
     }
 
     emit Signal_UpdateCoor(strCoord);
-}
-
-void FgoGraphicsView::translate(QPointF delta)
-{
-    // 根据当前 zoom 缩放平移数
-    delta *= m_scale;
-    delta *= m_translateSpeed; // view 根据鼠标下的点作为锚点来定位 scene
-    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    QPoint newCenter(VIEW_WIDTH / 2 - delta.x(), VIEW_HEIGHT / 2 - delta.y());
-    centerOn(mapToScene(newCenter)); // scene 在 view 的中心点作为锚点
-    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 }
