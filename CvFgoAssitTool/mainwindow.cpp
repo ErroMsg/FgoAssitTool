@@ -18,6 +18,7 @@
 #include <QAction>
 #include <QList>
 #include <QFileInfo>
+#include <QSettings>
 #include <QDebug>
 
 #include "../CvFgoUiSys/fgodisplayerwidget.h"
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initUi();
     initToolBar();
     initStatusBar();
+    initSetting();
 
     setWindowState(Qt::WindowMaximized);
 }
@@ -43,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+
 }
 
 void MainWindow::initUi()
@@ -99,6 +102,47 @@ void MainWindow::initStatusBar()
     connect(m_pSourceDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
     connect(m_pTemplateDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
     connect(m_pResultDisplayer->getGraphicsView(),SIGNAL(Signal_UpdateCoor(QString)),this,SLOT(Slot_UpdateStatusBar(QString)));
+}
+
+void MainWindow::initSetting()
+{
+    QString inifilePath("./setting.ini");
+    QFileInfo fi(inifilePath);
+
+    //write new init file
+    if(!fi.exists())
+    {
+        QSettings settings(inifilePath,QSettings::IniFormat);
+        settings.beginGroup("mainwindow");
+        settings.setValue("size", 1);
+        settings.setValue("fullScreen", 2);
+        settings.endGroup();
+
+        settings.beginGroup("outputpanel");
+        settings.setValue("visible", true);
+        settings.endGroup();
+    }
+
+    //read init file
+    {
+        QSettings settings(inifilePath,QSettings::IniFormat);
+        QStringList alllist = settings.childGroups();
+        qDebug()<<"allgroup is :"<<alllist;
+
+        int val = settings.value("mainwindow/fullScreen",-999).toInt();
+        qDebug()<<"val = " <<val;
+        /*
+        for(QString key : alllist)
+        {
+            settings.beginGroup(key);
+            //QString p1 = setting.value("para_1").toString();
+            //string p2 = setting.value("para_2").toString().toStdString();
+            settings.endGroup();
+        }
+        */
+    }
+
+
 }
 
 void MainWindow::slot_AddSource()

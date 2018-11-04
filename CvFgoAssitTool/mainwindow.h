@@ -26,6 +26,7 @@ public:
     void initUi();
     void initToolBar();
     void initStatusBar();
+    void initSetting();
 
 private slots:
     void slot_AddSource();
@@ -34,6 +35,7 @@ private slots:
     void Slot_ButtonTest(); //test use port
     void Slot_UpdateStatusBar(QString strInfo);
     void slot_MessageBox(QString strinfo);
+
 signals:
     void Signal_ChangeStatus(QString);
 private:
