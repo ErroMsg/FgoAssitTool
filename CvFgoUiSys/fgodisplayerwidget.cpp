@@ -71,13 +71,19 @@ QGraphicsScene *FgoDisplayerWidget::getGraphicsScene()
     return m_pScene;
 }
 
-void FgoDisplayerWidget::clearScene()
+void FgoDisplayerWidget::restoreScene()
 {
-    m_pScene->removeItem(m_pPostedImage);
-    if(m_pPostedImage)
+    if(m_pScene)
     {
-        delete m_pPostedImage;
-        m_pPostedImage = nullptr;
+        m_pScene->removeItem(m_pPostedImage);
+        if(m_pPostedImage)
+        {
+            delete m_pPostedImage;
+            m_pPostedImage = nullptr;
+        }
+        delete m_pScene;
+        m_pScene = new QGraphicsScene(this);
+        m_pGraphicsView->setScene(m_pScene);
     }
 }
 
@@ -95,7 +101,7 @@ void FgoDisplayerWidget::postImage(QString strfilepath)
 {
     if(m_pPostedImage)
     {
-        clearScene();
+        restoreScene();
     }
 
     m_pPostedImage = new QGraphicsPixmapItem(QPixmap(strfilepath));

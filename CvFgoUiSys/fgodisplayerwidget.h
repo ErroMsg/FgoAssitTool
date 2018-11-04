@@ -29,7 +29,7 @@ public:
     void initLayout();
     FgoGraphicsView *getGraphicsView();
     QGraphicsScene *getGraphicsScene();
-    void clearScene();
+    void restoreScene();
     QString getPostImagePath();
 
 public slots:
